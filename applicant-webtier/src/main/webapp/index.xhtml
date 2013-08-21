@@ -1,0 +1,112 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+         <title>Applicant Registration</title>
+           <script type="text/javascript">
+            
+        $(document).ready(function() {
+            $("#charcount").html(300);
+           
+        });
+        
+        function setDefault()
+        {
+           $("#charcount").html(300);
+            
+        }
+        function textCounter(obj)
+        {
+            
+            var inputLength = obj.value.length;
+            
+            if(inputLength > 300)
+            {
+                obj.value = obj.value.substr(0, 300);      
+            }
+            else
+            {
+                $("#charcount").html(300-inputLength);
+            }
+        }
+       
+        </script>
+         
+         <style>
+             
+             #waitInfo {
+                position:fixed;
+                top:50%;
+                left:50%;
+                width:200px;
+                height:200px;
+                margin-left:-100px;
+                margin-top:-100px;
+           }
+           
+           .formlabel #infodiv {
+               
+               font-size: 12px;
+               font-family: Lucida Console;
+               font-weight:bold;
+           }
+           
+           #waitinfolabel {
+               
+               font-size:16px;
+               font-weight:bold;
+           }
+           
+           body {
+               
+               background-color:#F4A460;
+           }
+         </style>
+    </h:head>
+    <h:body>
+
+         <h:form id="applicantform" >
+           
+            <p:growl id="notyid" sticky="false"></p:growl>
+            <h:panelGrid columns="3" id="applicantpanel1" >
+                <h:outputText styleClass="formLabel" value="First name: *" >
+                    
+                </h:outputText>
+                <p:inputText required="true" id="fname" value="#{applicantBean.applicant.firstName}"></p:inputText>
+                <p:message for="fname"></p:message>
+                <h:outputText styleClass="formLabel" value="Last name: *" >
+                    
+                </h:outputText>
+                <p:inputText required="true" id="lname" value="#{applicantBean.applicant.lastName}"></p:inputText>
+                <p:message for="lname"></p:message>
+                
+                <h:outputText styleClass="formLabel" value="Gender: "></h:outputText>
+                <h:selectOneRadio value="#{applicantBean.applicant.gender}">
+                    <f:selectItems value="#{applicantBean.genders}"  var="item" itemLabel="#{item.key}" itemValue="#{item.value}"></f:selectItems>
+                                 
+                
+                
+                </h:selectOneRadio>
+            </h:panelGrid>
+            <h:panelGroup>
+                <h:outputText styleClass="formLabel" value="Info (max 300 characters):"></h:outputText>
+            </h:panelGroup>
+             <h:panelGrid columns="1" id="textareapanel" >
+                 <h:inputTextarea title="Explain briefly why we should consider you as a worker" value="#{applicantBean.applicant.info}" id="infoid" cols="30" rows="10" onkeyup="textCounter(this);" >
+                    
+                </h:inputTextarea>
+                 <p:tooltip for="infoid" showEvent="focus" hideEvent="blur" /> 
+                <div id="infodiv">Characters left: <span id="charcount"></span></div> 
+                    
+            </h:panelGrid>
+            <p:commandButton oncomplete="setDefault();" update="applicantpanel1, notyid, textareapanel" actionListener="#{applicantBean.saveApplicant}" value="Save"></p:commandButton>
+         </h:form>
+      
+        
+    </h:body>
+</html>
+
+
