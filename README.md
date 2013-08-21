@@ -1,4 +1,0 @@
-Applicant
-=========
-
-Applicant registration project
