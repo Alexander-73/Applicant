@@ -39,4 +39,13 @@ public class ApplicantService implements Serializable {
         return em.createNamedQuery("Applicant.findAll", Applicant.class).getResultList();
     }
 
+    public void editApplicant(Applicant applicant) {
+        em.merge(applicant);
+    }
+
+    public void removeApplicant(Applicant selectedApplicant) {
+       em.remove(em.contains(selectedApplicant) ? selectedApplicant : em.merge(selectedApplicant));    
+    
+    }
+    
 }

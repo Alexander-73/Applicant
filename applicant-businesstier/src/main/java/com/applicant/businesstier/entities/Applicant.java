@@ -15,6 +15,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -23,7 +24,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Timo
  */
 @Entity
-@Table(name = "applicant")
+@Table(name = "Applicant")
 @NamedQueries({
     @NamedQuery(name = "Applicant.findAll", query = "SELECT a FROM Applicant a")})
 public class Applicant implements Serializable {
@@ -31,9 +32,9 @@ public class Applicant implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic
-    @Column(name = "idapplicant")
+    @Column(name = "idApplicant")
     private Integer idapplicant;
-    @Size(min = 3, max = 40)
+    @Pattern(regexp="^[a-zA-Z]{2,}[-a-zA-Z]{1}[a-zA-Z]*", message="Invalid firstname")
     @Column(name = "firstname")
     private String firstName;
     @Size(min = 3, max = 100)
