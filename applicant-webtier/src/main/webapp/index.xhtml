@@ -3,17 +3,36 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://java.sun.com/jsf/core">
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
     <h:head>
          <title>Applicant Registration</title>
-           <script type="text/javascript">
-            
+          
+        <h:outputScript name="js/notifier.js" />
+        <script type="text/javascript">
         $(document).ready(function() {
             $("#charcount").html(300);
-           
+            
+            setFocus();
         });
         
-        function setDefault()
+        function setFocus()
+        {
+            $("#fname").focus();
+        }
+        
+        function showNoty(param)
+        {
+            if(param == 1)
+                Notifier.success("Applicant saved successfully!!");
+            else if(param == 2)
+                Notifier.success("Applicant edited successfully!!");
+            else if(param == 3)
+                Notifier.success("Applicant removed successfully!!");
+        }
+        
+        function setDefult()
         {
            $("#charcount").html(300);
             
@@ -45,6 +64,7 @@
                 height:200px;
                 margin-left:-100px;
                 margin-top:-100px;
+                
            }
            
            .formlabel #infodiv {
@@ -60,18 +80,36 @@
                font-weight:bold;
            }
            
+           .edit-img {
+               width:48px;
+               height:48px;
+               background-image:url(#{resource['images:user_male_edit.png']});
+           }
+           
            body {
                
-               background-color:#F4A460;
+               background: url(http://cdn1.editmysite.com/images/404background.jpg);
+               color: #ccc;
            }
-         </style>
-    </h:head>
-    <h:body>
-
-         <h:form id="applicantform" >
            
-            <p:growl id="notyid" sticky="false"></p:growl>
-            <h:panelGrid columns="3" id="applicantpanel1" >
+          
+         </style>
+         
+
+    </h:head>
+    
+    <h:body>
+    
+         <!--<ui:include src="editPanel.xhtml"/>-->
+         <h:form id="applicantform" prependId="false" >
+           
+             <p:commandLink title="Add new applicant" oncomplete="setFocus()" update="applicantpanel1, btnpanel, textareapanel" actionListener="#{applicantBean.addApplicant}" >
+                 <h:graphicImage value="#{resource['images:user_group_new.png']}"/>
+             </p:commandLink>
+          
+             <br /><br />
+                  
+                <h:panelGrid columns="3" id="applicantpanel1" >
                 <h:outputText styleClass="formLabel" value="First name: *" >
                     
                 </h:outputText>
@@ -86,26 +124,95 @@
                 <h:outputText styleClass="formLabel" value="Gender: "></h:outputText>
                 <h:selectOneRadio value="#{applicantBean.applicant.gender}">
                     <f:selectItems value="#{applicantBean.genders}"  var="item" itemLabel="#{item.key}" itemValue="#{item.value}"></f:selectItems>
-                                 
-                
-                
+                      
                 </h:selectOneRadio>
             </h:panelGrid>
             <h:panelGroup>
                 <h:outputText styleClass="formLabel" value="Info (max 300 characters):"></h:outputText>
             </h:panelGroup>
              <h:panelGrid columns="1" id="textareapanel" >
-                 <h:inputTextarea title="Explain briefly why we should consider you as a worker" value="#{applicantBean.applicant.info}" id="infoid" cols="30" rows="10" onkeyup="textCounter(this);" >
+                 <h:inputTextarea value="#{applicantBean.applicant.info}" id="infoid" cols="30" rows="10" onkeyup="textCounter(this);" >
                     
                 </h:inputTextarea>
-                 <p:tooltip for="infoid" showEvent="focus" hideEvent="blur" /> 
                 <div id="infodiv">Characters left: <span id="charcount"></span></div> 
                     
             </h:panelGrid>
-            <p:commandButton oncomplete="setDefault();" update="applicantpanel1, notyid, textareapanel" actionListener="#{applicantBean.saveApplicant}" value="Save"></p:commandButton>
+             
+             <h:panelGrid columns="2" id="btnpanel">
+                 <p:commandButton disabled="#{applicantBean.editable}" id="savebtnid" update="applicantpanel1, applicantpanel, btnpanel, textareapanel" global="true" oncomplete="if (#{!facesContext.validationFailed}) showNoty(1)" actionListener="#{applicantBean.saveApplicant}" value="Save"></p:commandButton>
+                <p:commandButton disabled="#{!applicantBean.editable}" id="editbtnid" update="applicantpanel1, applicantpanel, btnpanel, textareapanel" global="true" oncomplete="showNoty(2);" actionListener="#{applicantBean.edit}" value="Edit" />
+                   
+             </h:panelGrid>
+             <br /><br />
+            <!-- <p:fieldset legend="Saved applicants" toggleable="true" collapsed="true" >-->
+            <h:panelGrid id="applicantpanel">
+               
+                <p:dataTable rows="20" id="applicanttable" value="#{applicantBean.applicants}" var="applicant">
+                   
+                    <p:column headerText="Firstname" >
+                    <h:outputText value="#{applicant.firstName}"></h:outputText>
+                </p:column>
+                    
+                    <p:column headerText="Lastname"> 
+                     <h:outputText value="#{applicant.lastName}"></h:outputText>
+                </p:column>
+                 <p:column headerText="Gender"> 
+                     <h:outputText rendered="#{applicant.gender eq 0}" value="Male"></h:outputText>
+                     <h:outputText rendered="#{applicant.gender eq 1}" value="Female"></h:outputText>
+                </p:column>
+                  <p:column headerText="Info"> 
+                      <h:outputText value="#{applicant.info}"></h:outputText>
+                    
+                </p:column>
+                    
+                  <p:column> 
+                      <p:commandLink title="Edit applicant" global="true" update=":applicantform:applicantpanel1, :applicantform:btnpanel, :applicantform:textareapanel" process="@this" action="#{applicantBean.editApplicant}" >  
+                          <h:graphicImage value="#{resource['images:user_male_edit.png']}"/>
+                          <f:setPropertyActionListener value="#{applicant}" target="#{applicantBean.selectedApplicant}"/>
+                      </p:commandLink>
+                     
+                      
+                </p:column>
+                
+                    
+               <p:column> 
+                   <p:commandLink title="Remove applicant" onclick="confirmation.show()" global="true" process="@this">  
+                      <h:graphicImage url="#{resource['images:remove.png']}"/>
+                      <f:setPropertyActionListener value="#{applicant}" target="#{applicantBean.selectedApplicant}"/>
+                      
+                   </p:commandLink> 
+                </p:column>
+            
+                <f:facet name="footer">  
+                   Applicant count #{fn:length(applicantBean.applicants)} 
+                </f:facet>  
+            </p:dataTable>
+                
+                
+            </h:panelGrid>
+            <!--</p:fieldset>-->
+            <p:confirmDialog widgetVar="confirmation" header="Confirmation" showEffect="slide">
+                
+                    <h:outputText value="#{applicantBean.selectedApplicant.lastName}"/><br />
+                    <p:commandButton global="true" process="@this" value="Yes" update="applicantpanel" oncomplete="confirmation.hide(); showNoty(3)" actionListener="#{applicantBean.removeApplicant}" />          
+                    <p:commandButton value="No" onclick="confirmation.hide()"/>
+                
+                
+            </p:confirmDialog>
          </h:form>
+         
+        <div id="waitInfo" >
+        <p:ajaxStatus>
+            <f:facet name="start">
+                <h:graphicImage url="#{resource['images:ajax-loader.gif']}"></h:graphicImage>
+            </f:facet>
+            
+            <f:facet name="complete">
+                <h:graphicImage value=""></h:graphicImage>
+            </f:facet>
+        </p:ajaxStatus>
       
-        
+        </div>
     </h:body>
 </html>
 
