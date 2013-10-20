@@ -1,0 +1,45 @@
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    
+    <h:form id="applicantmanagementform" prependId="false" >
+            <p:dialog id="dlgid" modal="true" header="Edit applicant" widgetVar="dlg" >
+                        <h:panelGrid columns="3" id="applicantpanel1" >
+                <h:outputText styleClass="formLabel" value="First name: *" >
+                    
+                </h:outputText>
+                <p:inputText required="true" id="fname" value="#{applicantBean.applicant.firstName}"></p:inputText>
+                <p:message for="fname"></p:message>
+                <h:outputText styleClass="formLabel" value="Last name: *" >
+                    
+                </h:outputText>
+                <p:inputText required="true" id="lname" value="#{applicantBean.applicant.lastName}"></p:inputText>
+                <p:message for="lname"></p:message>
+                
+                <h:outputText styleClass="formLabel" value="Gender: "></h:outputText>
+                <h:selectOneRadio value="#{applicantBean.applicant.gender}">
+                    <f:selectItems value="#{applicantBean.genders}"  var="item" itemLabel="#{item.key}" itemValue="#{item.value}"></f:selectItems>
+                                 
+                
+                
+                </h:selectOneRadio>
+            </h:panelGrid>
+            <h:panelGroup>
+                <h:outputText styleClass="formLabel" value="Info (max 300 characters):"></h:outputText>
+            </h:panelGroup>
+             <h:panelGrid columns="1" id="textareapanel" >
+                 <h:inputTextarea value="#{applicantBean.applicant.info}" id="infoid" cols="30" rows="10" onkeyup="textCounter(this);" >
+                    
+                </h:inputTextarea>
+                <div id="infodiv">Characters left: <span id="charcount"></span></div> 
+                    
+            </h:panelGrid>
+            <p:commandButton id="savebtnid" global="true" oncomplete="setDefault();" actionListener="#{applicantBean.saveApplicant}" value="Save"></p:commandButton>
+            
+            </p:dialog>
+        </h:form>
+    
+</html>
+
