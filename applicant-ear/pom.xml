@@ -51,6 +51,36 @@
             </modules>
         </configuration>
       </plugin>
+      
+     <!--  <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jboss-maven-plugin</artifactId>
+                <version>1.5.0</version>
+                <executions>
+                    <execution>
+                        <id>jboss-undeploy</id>
+                        <goals>
+                            <goal>undeploy</goal>
+                        </goals>
+                        <phase>clean</phase>
+                    </execution>
+                    <execution>
+                        <id>jboss-deploy</id>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
+                        <phase>package</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <jbossHome>/home/timovaananen/jboss-eap-6.1</jbossHome>
+                    <hostName>localhost</hostName>
+                    <port>8080</port>
+                    <fileNames>
+                        <fileName>${basedir}/target/applicant-ear-1.0-SNAPSHOT.ear</fileName>
+                    </fileNames>
+                </configuration>
+            </plugin>-->
     </plugins>
   </build>
     <dependencies>
