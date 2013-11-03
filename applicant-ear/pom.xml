@@ -51,6 +51,54 @@
             </modules>
         </configuration>
       </plugin>
+       <plugin>
+                <groupId>org.glassfish.maven.plugin</groupId>
+                <artifactId>maven-glassfish-plugin</artifactId>
+                <version>2.1</version>
+                <executions>
+                    <execution>
+                        <id>gf-undeploy</id>
+                        <goals>
+                            <goal>undeploy</goal>
+                        </goals>
+                        <phase>clean</phase>
+                    </execution>
+                    <execution>
+                        
+                        <id>gf-deploy</id>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
+                        <phase>package</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <glassfishDirectory>/home/timovaananen/glassfish3/glassfish</glassfishDirectory>
+                    <domainDirectory>/home/timovaananen/glassfish3/glassfish/domains/my-apps</domainDirectory>
+                    <user>admin</user>
+                    <!--<adminPassword>admin</adminPassword-->
+                    <passwordFile>/home/timovaananen/glassfish3/glassfish/domains/my-apps/master-password</passwordFile>
+                    <autoCreate>true</autoCreate>
+                    <debug>true</debug>
+                    <echo>true</echo>
+                    <terse>false</terse>
+                    
+                    <domain>
+                        <name>my-apps</name>
+                        <host>localhost</host>
+                        <adminPort>4848</adminPort>
+                        <httpPort>8080</httpPort>
+                    </domain>
+                    <components>
+                        <component>
+                            <name>Applicant</name>
+                            <artifact>target/applicant-ear-1.0-SNAPSHOT.ear</artifact>
+                        </component>
+                    </components>
+                  
+                </configuration>
+               
+            </plugin>
       
      <!--  <plugin>
                 <groupId>org.codehaus.mojo</groupId>
