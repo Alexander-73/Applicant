@@ -1,1 +1,11 @@
-Timo's readme file for Applicant. Doesn't contain anything important. Just a test.
+Maven based Java EE application for simple applicant management.
+Deployed to the TomEE, uses PostgreSQL database
+
+Applicant   (parent pom)
+    |
+    |
+    |----- applicant-webtier   (JSF 2 + Primefaces, facelets)
+    |
+    |----- applicant-businesstier  (Business interfaces, implementations, Applicant entitity)
+    |
+    |----- applicant-ear (Deployable project ear)
